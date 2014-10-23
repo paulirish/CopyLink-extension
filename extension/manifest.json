@@ -16,7 +16,7 @@
       "32": "icon32.png",
       "64": "icon64.png"
    },
-   "name": "Create Link",
+   "name": "Create Link Simple",
    "options_page": "options.html",
    "content_scripts" : [{
      "matches"    : ["http://*/*", "https://*/*", "file:///*/*"],
@@ -28,5 +28,5 @@
      "all_frames" : true
    }],
    "permissions": [ "tabs", "http://*/*", "https://*/*", "contextMenus" ],
-   "version": "0.2.10"
+   "version": "0.3"
 }

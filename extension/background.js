@@ -15,10 +15,10 @@ function CreateLink() {
   } );
 }
 CreateLink.default_formats = [
-    {label: "Plain text", format: '%text% %url%' },
+    // {label: "Plain text", format: '%text% %url%' },
     {label: "HTML", format: '<a href="%url%">%htmlEscapedText%</a>' },
-    {label: "markdown", format: '[%text%](%url%)' },
-    {label: "mediaWiki", format: '[%url% %text%]' },
+    // {label: "markdown", format: '[%text%](%url%)' },
+    // {label: "mediaWiki", format: '[%url% %text%]' },
 ];
 
 CreateLink.prototype.copyToClipboard = function (text) {

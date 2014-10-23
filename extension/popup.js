@@ -39,7 +39,7 @@ function onMenuSelected(tab, id) {
 }
 
 function setupEventHandlers() {
-  document.addEventListener( 'mouseup', function (ev) {
+  document.addEventListener( 'click', function (ev) {
     chrome.windows.getCurrent(function (w) {
       chrome.tabs.getSelected(w.id, function (t) {
         onMenuSelected(t, ev.target.id);
