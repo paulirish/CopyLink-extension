@@ -9,7 +9,7 @@
       "default_title": "Create Link",
       "default_popup": "popup.html"
    },
-   "description": "Copy current page URL to clipboard in various formats.",
+   "description": "Copy current page URL to clipboard in HTML.",
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",
