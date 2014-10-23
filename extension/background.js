@@ -126,7 +126,7 @@ function onMenuItemClick(contextMenuIdList, info, tab) {
   } else {
     url = info.linkUrl ||  info.pageUrl;
   }
-  var text = info.selectionText || tab.title;
+  var text = tab.title;
   var title = tab.title;
 
   var formatId = contextMenuIdList[info.menuItemId];
