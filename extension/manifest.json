@@ -18,15 +18,7 @@
    },
    "name": "Create Link Simple",
    "options_page": "options.html",
-   "content_scripts" : [{
-     "matches"    : ["http://*/*", "https://*/*", "file:///*/*"],
-     "css"        : [],
-     "js"         : [
-       "content.js"
-     ],
-     "run_at"     : "document_end",
-     "all_frames" : true
-   }],
+  
    "permissions": [ "tabs", "http://*/*", "https://*/*", "contextMenus" ],
    "version": "0.3"
 }
