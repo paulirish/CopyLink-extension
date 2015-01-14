@@ -17,7 +17,6 @@
       "64": "icon64.png"
    },
    "name": "Create Link Simple",
-   "options_page": "options.html",
   
    "permissions": [ "tabs", "http://*/*", "https://*/*", "contextMenus" ],
    "version": "0.3"
