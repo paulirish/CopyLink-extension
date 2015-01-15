@@ -11,28 +11,23 @@ chrome.extension.onMessage.addListener(
 
 
 function CreateLink() {
-  var self = this;
-  this.__defineGetter__( "formats", function () {
-    return self.readFormats();
-  } );
-}
-CreateLink.default_formats = [
+  this.formats = [
     // {label: "Plain text", format: '%text% %url%' },
     {label: "HTML", format: '<a href="%url%">%htmlEscapedText%</a>' },
     // {label: "markdown", format: '[%text%](%url%)' },
     // {label: "mediaWiki", format: '[%url% %text%]' },
-];
+  ];
+}
 
-CreateLink.prototype.copyToClipboard = function (text) {
+
+CreateLink.prototype.copyTextToClipboard = function () {
   var proxy = document.getElementById('clipboard_object');
-  proxy.value = text;
+  proxy.value = this.textToCopy;
   proxy.select();
   document.execCommand("copy");
 }
 
-CreateLink.prototype.readFormats = function () {
-  return CreateLink.default_formats;;
-}
+
 function escapeHTML(text) {
   return text ? text.replace(/[&<>'"]/g, convertHTMLChar) : text;
 }
@@ -55,38 +50,18 @@ function sendMessageToTab(tabId, message) {
   });
 }
 
-CreateLink.prototype.format = function (formatId) {
-  return this.formats[formatId];
-}
-CreateLink.prototype.formatLinkText = function (formatId, url, text, title, tabId) {
-  var d;
 
-  var def = this.format(formatId);
+CreateLink.prototype.formatLinkText = function (formatId, url, text, title, tabId) {
+
+  var def = this.formats[formatId];;
   var data = def.format.
     replace(/%url%/g, url).
-    replace(/%text%/g, text.replace(/\n/g, ' ')).
-    replace(/%text_n%/g, text).
-    replace(/%text_br%/g, text.replace(/\n/g, '<br />\n')).
-    replace(/%title%/g, title).
-    replace(/%newline%/g, '\n').
     replace(/%htmlEscapedText%/g, escapeHTML(text)).
     replace(/\\t/g, '\t').
     replace(/\\n/g, '\n');
-  
-  var m = data.match(/%input%/g);
-  d = _.Deferred().resolve(data);
 
-  d.pipe(function (data) {
-    if (def.filter) {
-      var m = def.filter.match(/^s\/(.+?)\/(.*?)\/(\w*)$/);
-      if (m) {
-        data = data.replace(m[1], m[2]);
-      }
-    }
-    return data;
-  });
-
-  return d;
+  this.textToCopy = data;
+  return this;
 }
 
 function instance() {
@@ -94,4 +69,21 @@ function instance() {
 		window.__instance = new CreateLink();
 	}
 	return window.__instance;
+}
+
+
+
+function onMenuItemClick(contextMenuIdList, info, tab) {
+  var url;
+  if (info.mediaType === 'image') {
+    url = info.srcUrl;
+  } else {
+    url = info.linkUrl ||  info.pageUrl;
+  }
+  var text = info.selectionText || tab.title;
+  var title = tab.title;
+
+  var formatId = contextMenuIdList[info.menuItemId];
+  instance().formatLinkText(formatId, url, text, title, tab.id).copyTextToClipboard();
+
 }

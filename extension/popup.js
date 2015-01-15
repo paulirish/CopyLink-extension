@@ -27,10 +27,9 @@ function onMenuSelected(tab, id) {
           var title = tab.title;
           var text = (selectedText && selectedText != '') ? selectedText : title;
 
-          _createLink.formatLinkText(n, url, text, title, tabId).pipe(function (linkText) {
-            _createLink.copyToClipboard(linkText);
-            window.close();
-          });
+          _createLink.formatLinkText(n, url, text, title, tabId).copyTextToClipboard();
+          window.close();
+        
         })
       })
     });
