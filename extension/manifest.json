@@ -6,17 +6,17 @@
    },
    "browser_action": {
       "default_icon": "icon64.png",
-      "default_title": "Create Link"
+      "default_title": "Copy HTML Link"
    },
-   "description": "Copy current page URL to clipboard in HTML.",
+   "description": "Copy current page title and URL to clipboard in HTML.",
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",
       "32": "icon32.png",
       "64": "icon64.png"
    },
-   "name": "Create Link Simple",
+   "name": "Copy HTML Link",
   
-   "permissions": [ "tabs", "http://*/*", "https://*/*", "contextMenus" ],
-   "version": "0.3"
+   "permissions": [ "tabs" ],
+   "version": "0.4"
 }
