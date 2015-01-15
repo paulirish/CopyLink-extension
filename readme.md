@@ -8,6 +8,5 @@ copies an html link of the page you're looking at which is perfect for pasting i
 
 
 Todo: 
-* delete more code
-* no more popup, just copy it immediately on click.
   * nice to have, feedback that clipboard was updated.
+  * es6-ify it. 

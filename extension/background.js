@@ -47,16 +47,18 @@ CreateLink.prototype.formatLinkText = function (opts) {
 
 
 
-
+// Handle that button click, babe.
 chrome.browserAction.onClicked.addListener(function(tab){
+  
   var opts = {
     format  : 'HTML',
     text    : tab.title,
     url     : tab.url,
     tab     : tab
-  }
+  };
 
   new CreateLink().formatLinkText(opts).copyTextToClipboard();
+
 });
 
 
