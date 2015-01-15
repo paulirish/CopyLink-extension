@@ -62,3 +62,16 @@ chrome.browserAction.onClicked.addListener(function(tab){
 });
 
 
+
+// set up so text is copied properly as html
+window.addEventListener('load', function () {
+  
+  document.addEventListener('copy', function (ev) {
+    ev.preventDefault();
+
+    var proxy = document.getElementById('clipboard_object');
+    var text = proxy.value;
+    ev.clipboardData.setData("text/plain", text);
+    ev.clipboardData.setData("text/html", text);
+  }, true);
+}, false);
