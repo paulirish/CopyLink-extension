@@ -8,6 +8,8 @@ chrome.extension.onMessage.addListener(
     }
   }
 );
+
+
 function CreateLink() {
   var self = this;
   this.__defineGetter__( "formats", function () {
@@ -29,15 +31,7 @@ CreateLink.prototype.copyToClipboard = function (text) {
 }
 
 CreateLink.prototype.readFormats = function () {
-  var formats;
-  try {
-    formats = JSON.parse( localStorage.format_preferences );
-  } catch(e) {
-  }
-  if ( !formats ) {
-    formats = CreateLink.default_formats;
-  }
-  return formats;
+  return CreateLink.default_formats;;
 }
 function escapeHTML(text) {
   return text ? text.replace(/[&<>'"]/g, convertHTMLChar) : text;
@@ -50,11 +44,8 @@ var charMap = {
   "'": '&apos;',
   '"': '&quot;'
 };
-function showPrompt(text, pos, subject) {
-  var msg = "Please enter the input text for \n" + subject;
-  var s = window.prompt(msg);
-  return (s === null) ? "" : s;
-}
+
+
 
 function sendMessageToTab(tabId, message) {
   return _.Deferred(function (d) {
@@ -83,21 +74,7 @@ CreateLink.prototype.formatLinkText = function (formatId, url, text, title, tabI
     replace(/\\n/g, '\n');
   
   var m = data.match(/%input%/g);
-  if (m) {
-    var inputDeferreds = m.map(function () {
-      return sendMessageToTab(tabId, 'showInputDialog');
-    });
-    d = _.when.apply(_, inputDeferreds).pipe(function () {
-      var inputs = _.toArray(arguments);
-      var index = 0;
-      data = data.replace(/%input%/g, function (s) {
-        return inputs[index++];
-      });
-      return data;
-    });
-  } else {
-    d = _.Deferred().resolve(data);
-  }
+  d = _.Deferred().resolve(data);
 
   d.pipe(function (data) {
     if (def.filter) {
@@ -118,61 +95,3 @@ function instance() {
 	}
 	return window.__instance;
 }
-
-function onMenuItemClick(contextMenuIdList, info, tab) {
-  var url;
-  if (info.mediaType === 'image') {
-    url = info.srcUrl;
-  } else {
-    url = info.linkUrl ||  info.pageUrl;
-  }
-  var text = tab.title;
-  var title = tab.title;
-
-  var formatId = contextMenuIdList[info.menuItemId];
-  instance().formatLinkText(formatId, url, text, title, tab.id).pipe(function (linkText) {
-    instance().copyToClipboard(linkText);
-  });
-}
-
-function updateContextMenus() {
-  var contextMenuIdList = {};
-
-  chrome.contextMenus.removeAll();
-
-  var formats = instance().formats;
-  if (formats.length == 1) {
-    chrome.contextMenus.create({
-      "title": "Copy Link as " + formats[0].label,
-      "id": "context-menu-item-0",
-      "contexts": ["all"],
-    });
-  } else {
-    for (var i = 0; i < formats.length; ++i) {
-      var menuId = chrome.contextMenus.create({
-        "title": formats[i].label,
-        "id": "context-menu-item-" + i,
-        "contexts": ["all"],
-      });
-      contextMenuIdList[menuId] = i;
-    }
-  }
-
-  chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    var n = Number(info.menuItemId.split(/-/).pop());
-    onMenuItemClick(contextMenuIdList, info, tab);
-  })
-}
-
-window.addEventListener('load', function () {
-  updateContextMenus();
-  
-  document.addEventListener('copy', function (ev) {
-    ev.preventDefault();
-
-    var proxy = document.getElementById('clipboard_object');
-    var text = proxy.value;
-    ev.clipboardData.setData("text/plain", text);
-    ev.clipboardData.setData("text/html", text);
-  }, true);
-}, false);
