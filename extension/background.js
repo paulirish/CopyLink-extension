@@ -11,12 +11,12 @@ chrome.extension.onMessage.addListener(
 
 
 function CreateLink() {
-  this.formats = [
+  this.formats = {
     // {label: "Plain text", format: '%text% %url%' },
-    {label: "HTML", format: '<a href="%url%">%htmlEscapedText%</a>' },
+    "HTML" : '<a href="%url%">%htmlEscapedText%</a>' 
     // {label: "markdown", format: '[%text%](%url%)' },
     // {label: "mediaWiki", format: '[%url% %text%]' },
-  ];
+  };
 }
 
 
@@ -31,30 +31,26 @@ CreateLink.prototype.copyTextToClipboard = function () {
 function escapeHTML(text) {
   return text ? text.replace(/[&<>'"]/g, convertHTMLChar) : text;
 }
-function convertHTMLChar(c) { return charMap[c]; }
-var charMap = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  "'": '&apos;',
-  '"': '&quot;'
-};
 
-
-
-function sendMessageToTab(tabId, message) {
-  return _.Deferred(function (d) {
-    chrome.tabs.sendMessage(tabId, message, function (res) {
-      d.resolve(res);
-    });
-  });
+function convertHTMLChar(c) { 
+  var charMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&apos;',
+    '"': '&quot;'
+  };
+  return charMap[c]; 
 }
+
+
+
 
 
 CreateLink.prototype.formatLinkText = function (formatId, url, text, title, tabId) {
 
-  var def = this.formats[formatId];;
-  var data = def.format.
+  var template = this.formats[formatId];;
+  var data = template.
     replace(/%url%/g, url).
     replace(/%htmlEscapedText%/g, escapeHTML(text)).
     replace(/\\t/g, '\t').
@@ -64,26 +60,16 @@ CreateLink.prototype.formatLinkText = function (formatId, url, text, title, tabI
   return this;
 }
 
-function instance() {
-	if ( !window.__instance ) {
-		window.__instance = new CreateLink();
-	}
-	return window.__instance;
-}
 
 
 
-function onMenuItemClick(contextMenuIdList, info, tab) {
-  var url;
-  if (info.mediaType === 'image') {
-    url = info.srcUrl;
-  } else {
-    url = info.linkUrl ||  info.pageUrl;
-  }
-  var text = info.selectionText || tab.title;
+
+chrome.browserAction.onClicked.addListener(function(tab){
+  var text = tab.title;
   var title = tab.title;
+  var url = tab.url
 
-  var formatId = contextMenuIdList[info.menuItemId];
-  instance().formatLinkText(formatId, url, text, title, tab.id).copyTextToClipboard();
+  new CreateLink().formatLinkText('HTML', url, text, title, tab.id).copyTextToClipboard();
+});
 
-}
+
