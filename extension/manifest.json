@@ -8,7 +8,7 @@
       "default_icon": "icon64.png",
       "default_title": "Copy HTML Link"
    },
-   "description": "Copy current page title and URL to clipboard in HTML.",
+   "description": "Copy link to the current page (with page title) to the clipboard.",
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",

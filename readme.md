@@ -1,4 +1,4 @@
-## simple copy link chrome extension
+## simple copy link to clipboard chrome extension
 
 
 copies an html link of the page you're looking at which is perfect for pasting into docs or emails or w/e
@@ -10,3 +10,5 @@ copies an html link of the page you're looking at which is perfect for pasting i
 Todo: 
   * nice to have, feedback that clipboard was updated.
   * es6-ify it. 
+  * new logo/icon
+  * publish on CWS
