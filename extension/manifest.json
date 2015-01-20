@@ -20,5 +20,6 @@
    "permissions": [ "activeTab" ],
    "version": "1.0"
    "permissions": [ "tabs" ],
+   "permissions": [ "tabs", "clipboardWrite" ],
    "version": "1.0.1"
 }

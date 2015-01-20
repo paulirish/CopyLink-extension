@@ -1,3 +1,12 @@
+var hiddenInput = document.getElementById('clipboard_object');
+var textToCopy;
+
+var focusHiddenArea = function() {
+    // In order to ensure that the browser will fire clipboard events, we always need to have something selected
+    hiddenInput.value = ''
+    hiddenInput.focus();
+    hiddenInput.select();
+};
 
 function CreateLink() {
   this.formats = {
@@ -9,9 +18,9 @@ function CreateLink() {
 }
 
 CreateLink.prototype.copyTextToClipboard = function () {
-  var proxy = document.getElementById('clipboard_object');
-  proxy.value = this.textToCopy;
-  proxy.select();
+  focusHiddenArea();
+  hiddenInput.value = textToCopy;
+  hiddenInput.select();
   document.execCommand("copy");
 };
 
@@ -41,7 +50,7 @@ CreateLink.prototype.formatLinkText = function (opts) {
     replace(/\\t/g, '\t').
     replace(/\\n/g, '\n');
 
-  this.textToCopy = data;
+  textToCopy = data;
   return this;
 }
 
@@ -62,16 +71,22 @@ chrome.browserAction.onClicked.addListener(function(tab){
 });
 
 
+// For every broswer except IE, we can easily get and set data on the clipboard
+var standardClipboardEvent = function(event) {
+    var clipboardData = event.clipboardData;
+    //clipboardData.setData('text/plain', textToCopy);
+    clipboardData.setData('text/html', textToCopy);
+};
+
 
 // set up so text is copied properly as html
 window.addEventListener('load', function () {
   
-  document.addEventListener('copy', function (ev) {
-    ev.preventDefault();
+  document.addEventListener('copy', function (e) {
 
-    var proxy = document.getElementById('clipboard_object');
-    var text = proxy.value;
-    ev.clipboardData.setData("text/plain", text);
-    ev.clipboardData.setData("text/html", text);
+    standardClipboardEvent(e);
+    focusHiddenArea();
+    e.preventDefault();
+    
   }, true);
 }, false);
