@@ -19,4 +19,6 @@
   
    "permissions": [ "activeTab" ],
    "version": "1.0"
+   "permissions": [ "tabs" ],
+   "version": "1.0.1"
 }
