@@ -17,6 +17,6 @@
    },
    "name": "Copy HTML Link",
   
-   "permissions": [ "tabs" ],
+   "permissions": [ "activeTab" ],
    "version": "1.0"
 }
