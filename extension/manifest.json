@@ -18,5 +18,5 @@
    "name": "Copy HTML Link",
   
    "permissions": [ "activeTab", "clipboardWrite" ],
-   "version": "1.0.2"
+   "version": "1.0.3"
 }
