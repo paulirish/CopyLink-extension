@@ -40,13 +40,22 @@ CreateLink.prototype.escapeHTML = function(text) {
   return text ? text.replace(/[&<>'"]/g, convertHTMLChar) : text;
 }
 
+CreateLink.prototype.stripTitleSuffixes = function(title) {
+
+  // these are pretty selfish and represent my own needs more than other peoples'
+  return title
+          .replace(' - Google Docs','')
+          .replace('- An open-source project to help move the web forward. - Google Project Hosting','');
+}
 
 CreateLink.prototype.formatLinkText = function (opts) {
  
   var template = this.formats[opts.format];
+  var text = this.stripTitleSuffixes(opts.text).trim();
+  
   var data = template.
     replace(/%url%/g, opts.url).
-    replace(/%htmlEscapedText%/g, this.escapeHTML(opts.text)).
+    replace(/%htmlEscapedText%/g, this.escapeHTML(text)).
     replace(/\\t/g, '\t').
     replace(/\\n/g, '\n');
 
