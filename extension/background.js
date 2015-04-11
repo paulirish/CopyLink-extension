@@ -19,28 +19,19 @@ class CreateLink {
         document.addEventListener('copy', this.handleCopyEvent.bind(this), true);
 
         // Handle that button click, babe.
-        chrome.browserAction.onClicked.addListener(this.handleBrowserAction);
+        chrome.browserAction.onClicked.addListener(this.handleBrowserAction.bind(this));
     }
 
     handleBrowserAction(tab) {
-        var opts = {
-            format: 'HTML',
-            text: tab.title,
-            url: tab.url,
-            tab: tab
-        };
-        CL.generateClipboardValues(opts).copyTextToClipboard();
+        this.title = tab.title;
+        this.url = tab.url;
+        this.tab = tab;
+        CL.generateClipboardValues().copyTextToClipboard();
     }
 
     escapeHTML(text) {
         function convertHTMLChar(c) {
-            var charMap = {
-              '&': '&amp;',
-              '<': '&lt;',
-              '>': '&gt;',
-              "'": '&apos;',
-              '"': '&quot;'
-            };
+            var charMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&apos;', '"': '&quot;' };
             return charMap[c];
         }
         return text ? text.replace(/[&<>'"]/g, convertHTMLChar) : text;
@@ -53,22 +44,21 @@ class CreateLink {
           .replace('- An open-source project to help move the web forward. - Google Project Hosting', '');
     }
 
-    generateClipboardValues(opts) {
+    generateClipboardValues() {
 
         // handle the default case
-        this.toClipboard.html = this.formatLinkText(opts);
+        this.toClipboard.html = this.formatLinkText('HTML');
 
         // handle the text fallback.
-        opts.format = 'Plain text';
-        this.toClipboard.text = this.formatLinkText(opts);
+        this.toClipboard.text = this.formatLinkText('Plain text');
         return this;
     }
 
-    formatLinkText(opts) {
-      var text = this.stripTitleSuffixes(opts.text).trim();
-      var template = this.formats[opts.format];
+    formatLinkText(format) {
+      var text = this.stripTitleSuffixes(this.title).trim();
+      var template = this.formats[format];
       var data = template
-                  .replace(/%url%/g, opts.url)
+                  .replace(/%url%/g, this.url)
                   .replace(/%text%/g, text)
                   .replace(/%htmlEscapedText%/g, this.escapeHTML(text))
                   .replace(/\\t/g, '\t')
@@ -95,6 +85,15 @@ class CreateLink {
         e.clipboardData.setData('text/html', this.toClipboard.html);
         this.focusHiddenArea();
         e.preventDefault();
+
+        this.triggerNotification();
+    }
+    triggerNotification(){
+        chrome.browserAction.setBadgeBackgroundColor({color: "#5CC77D"})
+        chrome.browserAction.setBadgeText({text: "✓"})
+        setTimeout(function(){
+          chrome.browserAction.setBadgeText({text: ""})
+        }, 1000);
     }
 }
 

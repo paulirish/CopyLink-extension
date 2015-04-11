@@ -8,8 +8,7 @@ copies an html link of the page you're looking at which is perfect for pasting i
 
 
 #### Todo: 
-  * nice to have, feedback that clipboard was updated.
-  * es6-ify it. 
+  * es6-ify more of it.
   * new logo/icon
 
 #### Also
