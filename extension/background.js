@@ -8,7 +8,7 @@ class CreateLink {
             'Markdown': '[%htmlEscapedText%](%url%)'
         };
 
-        this.addEventListeners();;;
+        this.addEventListeners();;;;;;
 
         this.lastTime = 0;
         this.doubleClickThreshold = 520;
