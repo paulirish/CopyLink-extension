@@ -4,10 +4,15 @@ class CreateLink {
     constructor() {
         this.formats = {
             'Plain text': '%text% %url%',
-            'HTML': '<a href="%url%">%htmlEscapedText%</a>'
+            'HTML': '<a href="%url%">%htmlEscapedText%</a>',
+            'Markdown': '[%htmlEscapedText%](%url%)'
         };
 
         this.addEventListeners();
+
+        this.lastTime = 0;
+        this.doubleClickThreshold = 520;
+        this.markdown = false;
 
         this.hiddenInput = document.getElementById('clipboard_object');
         this.toClipboard = {};
@@ -23,6 +28,9 @@ class CreateLink {
     }
 
     handleBrowserAction(tab) {
+        this.markdown = !!(Date.now() - this.lastTime < this.doubleClickThreshold);
+        this.lastTime = Date.now();
+
         this.title = tab.title;
         this.url = tab.url;
         this.tab = tab;
@@ -50,7 +58,7 @@ class CreateLink {
         this.toClipboard.html = this.formatLinkText('HTML');
 
         // handle the text fallback.
-        this.toClipboard.text = this.formatLinkText('Plain text');
+        this.toClipboard.text = this.formatLinkText(this.markdown ? 'Markdown' : 'Plain text');
         return this;
     }
 
@@ -90,7 +98,7 @@ class CreateLink {
     }
     triggerNotification(){
         chrome.browserAction.setBadgeBackgroundColor({color: "#5CC77D"})
-        chrome.browserAction.setBadgeText({text: "✓"})
+        chrome.browserAction.setBadgeText({text: this.markdown ? "MKDN" : "ZOK"})
         setTimeout(function(){
           chrome.browserAction.setBadgeText({text: ""})
         }, 1000);
