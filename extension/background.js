@@ -49,9 +49,9 @@ class CreateLink {
           return title
           .replace(' - Google Docs', '')
           .replace('- An open-source project to help move the web forward. - Google Project Hosting', '');
-    }
+      }
 
-    generateClipboardValues() {
+      generateClipboardValues() {
 
         // handle the default case
         this.toClipboard.html = this.formatLinkText('HTML');
@@ -65,15 +65,15 @@ class CreateLink {
       var text = this.stripTitleSuffixes(this.title).trim();
       var template = this.formats[format];
       var data = template
-                  .replace(/%url%/g, this.url)
-                  .replace(/%text%/g, text)
-                  .replace(/%htmlEscapedText%/g, this.escapeHTML(text))
-                  .replace(/\\t/g, '\t')
-                  .replace(/\\n/g, '\n');
+      .replace(/%url%/g, this.url)
+      .replace(/%text%/g, text)
+      .replace(/%htmlEscapedText%/g, this.escapeHTML(text))
+      .replace(/\\t/g, '\t')
+      .replace(/\\n/g, '\n');
       return data;
-    }
+  }
 
-    focusHiddenArea() {
+  focusHiddenArea() {
         // In order to ensure that the browser will fire clipboard events, we always need to have something selected
         this.hiddenInput.value = '';
         this.hiddenInput.focus();
@@ -99,8 +99,8 @@ class CreateLink {
         chrome.browserAction.setBadgeBackgroundColor({color: "#5CC77D"})
         chrome.browserAction.setBadgeText({text: this.markdown ? "MKDN" : "ZOK"})
         setTimeout(function(){
-          chrome.browserAction.setBadgeText({text: ""})
-        }, 1000);
+            chrome.browserAction.setBadgeText({text: ""})
+      }, 1000);
     }
 }
 
@@ -110,17 +110,17 @@ var CL = new CreateLink();
 
 
 chrome.commands.onCommand.addListener(function(command) {
-            console.log('Command:', command) ;
-            
-  chrome.tabs.getSelected( function(d){  console.log(d) })
+    console.log('Command:', command) ;
+
+    chrome.tabs.getSelected( function(d){  console.log(d) })
 
 
     var queryOpts = {  active: true, lastFocusedWindow: true };
-  chrome.tabs.query(queryOpts, tabArray => {
-    var activeTab = tabArray[0]
-    console.log(activeTab) 
+    chrome.tabs.query(queryOpts, tabArray => {
+        var activeTab = tabArray[0]
+        console.log(activeTab)
 
-  })
+    })
 
     CL.handleBrowserAction();
 });
