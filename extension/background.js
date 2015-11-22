@@ -8,8 +8,7 @@ class CreateLink {
             'Markdown': '[%htmlEscapedText%](%url%)'
         };
 
-        this.addEventListeners();;;;;;;;
-
+        this.addEventListeners();
         this.lastTime = 0;
         this.doubleClickThreshold = 520;
         this.markdown = false;
@@ -110,5 +109,19 @@ class CreateLink {
 var CL = new CreateLink();
 
 
+chrome.commands.onCommand.addListener(function(command) {
+            console.log('Command:', command) ;
+            
+  chrome.tabs.getSelected( function(d){  console.log(d) })
 
+
+    var queryOpts = {  active: true, lastFocusedWindow: true };
+  chrome.tabs.query(queryOpts, tabArray => {
+    var activeTab = tabArray[0]
+    console.log(activeTab) 
+
+  })
+
+    CL.handleBrowserAction();
+});
 
