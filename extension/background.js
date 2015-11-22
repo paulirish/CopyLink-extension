@@ -96,7 +96,7 @@ class CreateLink {
   }
   triggerNotification() {
     chrome.browserAction.setBadgeBackgroundColor({color: '#5CC77D'});
-    chrome.browserAction.setBadgeText({text: this.markdown ? 'MKDN' : 'ZOK'});
+    chrome.browserAction.setBadgeText({text: this.markdown ? 'MkDn' : 'OK'});
     setTimeout(function () {
       chrome.browserAction.setBadgeText({text: ''});
     }, 1000);
@@ -106,8 +106,6 @@ class CreateLink {
 var CL = new CreateLink();
 
 chrome.commands.onCommand.addListener(function (command) {
-  // console.log('Command:', command) ;
-
   var queryOpts = {  active: true, lastFocusedWindow: true };
   chrome.tabs.query(queryOpts, tabArray => {
     var activeTab = tabArray[0];
