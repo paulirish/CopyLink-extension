@@ -1,3 +1,4 @@
+
 "use strict"
 
 class CreateLink {
@@ -110,18 +111,13 @@ var CL = new CreateLink();
 
 
 chrome.commands.onCommand.addListener(function(command) {
-    console.log('Command:', command) ;
-
-    chrome.tabs.getSelected( function(d){  console.log(d) })
-
+    // console.log('Command:', command) ;
 
     var queryOpts = {  active: true, lastFocusedWindow: true };
     chrome.tabs.query(queryOpts, tabArray => {
         var activeTab = tabArray[0]
-        console.log(activeTab)
-
+        CL.handleBrowserAction(activeTab);
     })
 
-    CL.handleBrowserAction();
 });
 
