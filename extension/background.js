@@ -1,5 +1,4 @@
-
-"use strict"
+'use strict';
 
 class CreateLink {
   constructor() {
@@ -27,7 +26,7 @@ class CreateLink {
     chrome.browserAction.onClicked.addListener(this.handleBrowserAction.bind(this));
   }
 
-  handleBrowserAction(tab) {
+  handleBrowserAction( tab) {
     this.markdown = !!(Date.now() - this.lastTime < this.doubleClickThreshold);
     this.lastTime = Date.now();
 
@@ -37,23 +36,22 @@ class CreateLink {
     CL.generateClipboardValues().copyTextToClipboard();
   }
 
-  escapeHTML(text) {
-    function convertHTMLChar(c) {
+  escapeHTML( text) {
+    function convertHTMLChar (c) {
       var charMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&apos;', '"': '&quot;' };
       return charMap[c];
     }
     return text ? text.replace(/[&<>'"]/g, convertHTMLChar) : text;
   }
 
-  stripTitleSuffixes(title) {
-      // these are pretty selfish and represent my own needs more than other peoples'
-      return title
+  stripTitleSuffixes( title) {
+    // these are pretty selfish and represent my own needs more than other peoples'
+    return title
       .replace(' - Google Docs', '')
       .replace('- An open-source project to help move the web forward. - Google Project Hosting', '');
-    }
+  }
 
-    generateClipboardValues() {
-
+  generateClipboardValues() {
     // handle the default case
     this.toClipboard.html = this.formatLinkText('HTML');
 
@@ -62,15 +60,15 @@ class CreateLink {
     return this;
   }
 
-  formatLinkText(format) {
+  formatLinkText( format) {
     var text = this.stripTitleSuffixes(this.title).trim();
     var template = this.formats[format];
     var data = template
-    .replace(/%url%/g, this.url)
-    .replace(/%text%/g, text)
-    .replace(/%htmlEscapedText%/g, this.escapeHTML(text))
-    .replace(/\\t/g, '\t')
-    .replace(/\\n/g, '\n');
+      .replace(/%url%/g, this.url)
+      .replace(/%text%/g, text)
+      .replace(/%htmlEscapedText%/g, this.escapeHTML(text))
+      .replace(/\\t/g, '\t')
+      .replace(/\\n/g, '\n');
     return data;
   }
 
@@ -88,7 +86,7 @@ class CreateLink {
     document.execCommand('copy');
   }
 
-  handleCopyEvent (e){
+  handleCopyEvent( e) {
     e.clipboardData.setData('text/plain', this.toClipboard.text);
     e.clipboardData.setData('text/html', this.toClipboard.html);
     this.focusHiddenArea();
@@ -96,28 +94,24 @@ class CreateLink {
 
     this.triggerNotification();
   }
-  triggerNotification(){
-    chrome.browserAction.setBadgeBackgroundColor({color: "#5CC77D"})
-    chrome.browserAction.setBadgeText({text: this.markdown ? "MKDN" : "ZOK"})
-    setTimeout(function(){
-      chrome.browserAction.setBadgeText({text: ""})
+  triggerNotification() {
+    chrome.browserAction.setBadgeBackgroundColor({color: '#5CC77D'});
+    chrome.browserAction.setBadgeText({text: this.markdown ? 'MKDN' : 'ZOK'});
+    setTimeout(function () {
+      chrome.browserAction.setBadgeText({text: ''});
     }, 1000);
   }
 }
 
-
-
 var CL = new CreateLink();
 
-
-chrome.commands.onCommand.addListener(function(command) {
+chrome.commands.onCommand.addListener(function (command) {
   // console.log('Command:', command) ;
 
   var queryOpts = {  active: true, lastFocusedWindow: true };
   chrome.tabs.query(queryOpts, tabArray => {
-    var activeTab = tabArray[0]
+    var activeTab = tabArray[0];
     CL.handleBrowserAction(activeTab);
-  })
+  });
 
 });
-
