@@ -48,7 +48,12 @@ class CreateLink {
     // these are pretty selfish and represent my own needs more than other peoples'
     return title
       .replace(' - Google Docs', '')
-      .replace('- An open-source project to help move the web forward. - Google Project Hosting', '');
+      .replace('- An open-source project to help move the web forward.', '')
+      .replace(' - Google Project Hosting','')
+      .replace(' - Chromium - ',' - ')
+      .replace(' - Monorail',' - ')
+      .replace(/ - \S+@\S+ - ((\S+ M)|Gm)ail$/,'')
+      .replace(/ - $/,'')
   }
 
   generateClipboardValues() {
