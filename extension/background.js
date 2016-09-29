@@ -31,10 +31,20 @@ class CreateLink {
     this.lastTime = Date.now();
 
     this.title = tab.title;
-    this.url = tab.url;
+    this.url = this.cleanURL(tab.url);
     this.tab = tab;
     CL.generateClipboardValues().copyTextToClipboard();
   }
+
+  cleanURL(url){
+    const strippedURL = new URL(getStrippedUrl(url));
+    // nuke the hash stuff from google docs & slides
+    strippedURL.hash = strippedURL.hash
+        .replace(/(heading|slide)=[^&#]*/ig,'')
+        .replace(/^#$/,'')
+    return strippedURL.toString();
+  }
+
 
   escapeHTML( text) {
     function convertHTMLChar (c) {
