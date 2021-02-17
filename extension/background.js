@@ -62,6 +62,8 @@ class CreateLink {
       .replace(' - Google Project Hosting','')
       .replace(' - Chromium - ',' - ')
       .replace(' - Monorail',' - ')
+      .replace(' · GoogleChrome/lighthouse','')
+      .replace('Pull Request #','#')
       .replace(/ - \S+@\S+ - ((\S+ M)|Gm)ail$/,'')
       .replace(/ - $/,'')
   }
