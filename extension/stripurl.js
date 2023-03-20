@@ -1,5 +1,8 @@
 // thx to https://github.com/mihaip/utm-stripper/blob/master/extension/background.js
 
+// TODO in chromeonandroid when you SHARE a page, it shares without the BS. maybe its using rel=canonical?.. gotta investigate and copy
+// gotta also add a content script to get it. see ../inspect-canonical-content.js
+
 function getStrippedUrl(url) {
   // Strip UTM parameters
   if (url.indexOf('utm_') > url.indexOf('?')) {
