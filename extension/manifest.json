@@ -18,15 +18,5 @@
    "name": "Copy HTML Link",
 
    "permissions": [ "activeTab", "clipboardWrite" , "contextMenus"],
-   "version": "1.2",
-
-   "commands": {
-      "copy-html-link": {
-        "suggested_key": {
-          "default": "Alt+Shift+C",
-          "mac": "MacCtrl+Shift+C"
-        },
-        "description": "Copy link of the page (with title)"
-      }
-   }
+   "version": "1.2"
 }

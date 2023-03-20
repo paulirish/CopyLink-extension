@@ -122,11 +122,3 @@ class CreateLink {
 
 var CL = new CreateLink();
 
-chrome.commands.onCommand.addListener(function (command) {
-  var queryOpts = {  active: true, lastFocusedWindow: true };
-  chrome.tabs.query(queryOpts, tabArray => {
-    var activeTab = tabArray[0];
-    CL.handleBrowserAction(activeTab);
-  });
-
-});
