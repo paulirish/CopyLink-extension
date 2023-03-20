@@ -64,6 +64,7 @@ class CreateLink {
       .replace(' - Monorail',' - ')
       .replace(' · GoogleChrome/lighthouse','')
       .replace('Pull Request #','#')
+      .replace('Issue #','#')
       .replace(/ - \S+@\S+ - ((\S+ M)|Gm)ail$/,'')
       .replace(/ - $/,'')
   }
