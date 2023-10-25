@@ -1,5 +1,7 @@
 'use strict';
 
+import {getStrippedUrl} from './stripurl.js';
+
 class CreateLink {
   constructor() {
     this.formats = {
@@ -13,20 +15,16 @@ class CreateLink {
     this.doubleClickThreshold = 520;
     this.markdown = false;
 
-    this.hiddenInput = document.getElementById('clipboard_object');
     this.toClipboard = {};
 
   }
 
   addEventListeners() {
-    // grab the copy event and hijack it.
-    document.addEventListener('copy', this.handleCopyEvent.bind(this), true);
-
     // Handle that button click, babe.
-    chrome.browserAction.onClicked.addListener(this.handleBrowserAction.bind(this));
+    chrome.action.onClicked.addListener(this.handleaction.bind(this));
   }
 
-  handleBrowserAction( tab) {
+  handleaction( tab) {
     this.markdown = !!(Date.now() - this.lastTime < this.doubleClickThreshold);
     this.lastTime = Date.now();
 
@@ -54,7 +52,7 @@ class CreateLink {
       // https://crbug.com/1263871
       .replace('bugs.chromium.org/p/chromium/issues/detail?id=', 'crbug.com/')
       // drop extra params
-      .replace(/?.*/,'')
+      .replace(/\?.*/,'')
       .replace(/&.*/,'')
   }
 
@@ -105,33 +103,29 @@ class CreateLink {
     return data;
   }
 
-  focusHiddenArea() {
-    // In order to ensure that the browser will fire clipboard events, we always need to have something selected
-    this.hiddenInput.value = '';
-    this.hiddenInput.focus();
-    this.hiddenInput.select();
-  };
+
 
   copyTextToClipboard() {
-    this.focusHiddenArea();
-    this.hiddenInput.value = this.toClipboard.html;
-    this.hiddenInput.select();
-    document.execCommand('copy');
-  }
+    const textBlob = new Blob([this.toClipboard.text], { type: 'text/plain' });
+    const htmlBlob = new Blob([this.toClipboard.html], { type: 'text/html' });
+    // text/markdown not supported. (for several reasons) 
+    // …one being https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/modules/clipboard/clipboard_writer.cc;l=307-318;drc=717a5ba32f0aba300c860d5bff7c87bbcff44afc
+    // const mdBlob = new Blob([markdown], { type: "text/markdown" });
+    const cpItem = new ClipboardItem({
+      [textBlob.type]: textBlob,
+      [htmlBlob.type]: htmlBlob,
+    });
 
-  handleCopyEvent( e) {
-    e.clipboardData.setData('text/plain', this.toClipboard.text);
-    e.clipboardData.setData('text/html', this.toClipboard.html);
-    this.focusHiddenArea();
-    e.preventDefault();
-
-    this.triggerNotification();
+    navigator.clipboard.write([cpItem])
+      .then(_ => this.triggerNotification())
+      .catch(console.error);
   }
+  
   triggerNotification() {
-    chrome.browserAction.setBadgeBackgroundColor({color: '#5CC77D'});
-    chrome.browserAction.setBadgeText({text: this.markdown ? 'MkDn' : 'OK'});
+    chrome.action.setBadgeBackgroundColor({color: '#5CC77D'});
+    chrome.action.setBadgeText({text: this.markdown ? 'MkDn' : 'OK'});
     setTimeout(function () {
-      chrome.browserAction.setBadgeText({text: ''});
+      chrome.action.setBadgeText({text: ''});
     }, 1000);
   }
 }
