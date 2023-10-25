@@ -104,23 +104,18 @@ class CreateLink {
   }
 
 
-
+  // copy it from within the page! https://stackoverflow.com/a/75293710
   copyTextToClipboard() {
-    const textBlob = new Blob([this.toClipboard.text], { type: 'text/plain' });
-    const htmlBlob = new Blob([this.toClipboard.html], { type: 'text/html' });
-    // text/markdown not supported. (for several reasons) 
-    // …one being https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/modules/clipboard/clipboard_writer.cc;l=307-318;drc=717a5ba32f0aba300c860d5bff7c87bbcff44afc
-    // const mdBlob = new Blob([markdown], { type: "text/markdown" });
-    const cpItem = new ClipboardItem({
-      [textBlob.type]: textBlob,
-      [htmlBlob.type]: htmlBlob,
+    const p = chrome.scripting.executeScript({
+      target: { tabId: this.tab.id },
+      func: copyToClipboard_pagefn,
+      args: [this.toClipboard.text, this.toClipboard.html],
     });
-
-    navigator.clipboard.write([cpItem])
-      .then(_ => this.triggerNotification())
+    p.then(_ => this.triggerNotification())
       .catch(console.error);
   }
-  
+
+
   triggerNotification() {
     chrome.action.setBadgeBackgroundColor({color: '#5CC77D'});
     chrome.action.setBadgeText({text: this.markdown ? 'MkDn' : 'OK'});
@@ -128,6 +123,20 @@ class CreateLink {
       chrome.action.setBadgeText({text: ''});
     }, 1000);
   }
+}
+
+
+function copyToClipboard_pagefn(text, html) {
+    const textBlob = new Blob([text], { type: 'text/plain' });
+    const htmlBlob = new Blob([html], { type: 'text/html' });
+    // text/markdown not supported. (for several reasons)
+    // …one being https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/modules/clipboard/clipboard_writer.cc;l=307-318;drc=717a5ba32f0aba300c860d5bff7c87bbcff44afc
+    // const mdBlob = new Blob([markdown], { type: "text/markdown" });
+    const cpItem = new ClipboardItem({
+      [textBlob.type]: textBlob,
+      [htmlBlob.type]: htmlBlob,
+    });
+    return navigator.clipboard.write([cpItem]);
 }
 
 var CL = new CreateLink();

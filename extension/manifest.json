@@ -19,6 +19,6 @@
    },
    "name": "Copy HTML Link",
 
-   "permissions": [ "activeTab", "clipboardWrite" , "contextMenus"],
+   "permissions": [ "activeTab", "clipboardWrite", "scripting", "contextMenus"],
    "version": "2.0"
 }
