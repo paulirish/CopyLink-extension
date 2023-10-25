@@ -3,7 +3,7 @@
 class CreateLink {
   constructor() {
     this.formats = {
-      'Plain text': '%text% %url%',
+      'Plain text': '%url% "%text%"',
       'HTML': '<a href="%url%">%htmlEscapedText%</a>',
       'Markdown': '[%htmlEscapedText%](%url%)'
     };
@@ -31,7 +31,7 @@ class CreateLink {
     this.lastTime = Date.now();
 
     this.title = tab.title;
-    this.url = this.cleanURL(tab.url);
+    this.url = this.shortenURL(this.cleanURL(tab.url));
     this.tab = tab;
     CL.generateClipboardValues().copyTextToClipboard();
   }
@@ -44,6 +44,20 @@ class CreateLink {
         .replace(/^#$/,'')
     return strippedURL.toString();
   }
+
+  shortenURL(url){
+    return url
+      // https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/4975855
+      // https://crrev.com/c/4975855
+      .replace(/chromium-review.googlesource.com\/c\/.*?\/.*?\/\+/, 'crrev.com/c')
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=1263871&q=self%20profiling&can=2 "Monorail"
+      // https://crbug.com/1263871
+      .replace('bugs.chromium.org/p/chromium/issues/detail?id=', 'crbug.com/')
+      // drop extra params
+      .replace(/?.*/,'')
+      .replace(/&.*/,'')
+  }
+
 
 
   escapeHTML( text) {
@@ -62,6 +76,7 @@ class CreateLink {
       .replace(' - Google Project Hosting','')
       .replace(' - Chromium - ',' - ')
       .replace(' - Monorail',' - ')
+      .replace(' · Gerrit Code Review',' · ')
       .replace(' · GoogleChrome/lighthouse','')
       .replace('Pull Request #','#')
       .replace('Issue #','#')
