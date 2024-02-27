@@ -2,6 +2,8 @@
 
 import {getStrippedUrl} from './stripurl.js';
 
+const wait = (ms = 100) => new Promise(resolve => setTimeout(resolve, ms));
+
 class CreateLink {
   constructor() {
     this.formats = {
@@ -112,14 +114,22 @@ class CreateLink {
       func: copyToClipboard_pagefn,
       args: [this.toClipboard.text, this.toClipboard.html],
     });
-    p.then(_ => this.triggerNotification())
-      .catch(console.error);
+    p
+      .then(_ => { 
+        // probably not nececssary to iterate but w/e
+        const ok = _.find(tab => tab.result !== undefined).result.ok;
+        console.log({_}) ; this.triggerNotification(ok)
+      })
   }
 
-
-  triggerNotification() {
-    chrome.action.setBadgeBackgroundColor({color: '#5CC77D'});
-    chrome.action.setBadgeText({text: this.markdown ? 'MkDn' : 'OK'});
+  /**
+   * @param {boolean} ok 
+   */
+  triggerNotification(ok) {
+    const color = ok ? '#5CC77D' : 'red';
+    const text = !ok ? 'X' : this.markdown ? 'MkDn' : 'OK'
+    chrome.action.setBadgeBackgroundColor({color});
+    chrome.action.setBadgeText({text});
     setTimeout(function () {
       chrome.action.setBadgeText({text: ''});
     }, 1000);
@@ -128,6 +138,10 @@ class CreateLink {
 
 
 function copyToClipboard_pagefn(text, html) {
+    // setTimeout seems to resolve 'Document not focused' errors. https://stackoverflow.com/a/61216014
+
+    const wait = (ms = 10) => new Promise(resolve => setTimeout(resolve, ms));
+
     const textBlob = new Blob([text], { type: 'text/plain' });
     const htmlBlob = new Blob([html], { type: 'text/html' });
     // text/markdown not supported. (for several reasons)
@@ -137,7 +151,11 @@ function copyToClipboard_pagefn(text, html) {
       [textBlob.type]: textBlob,
       [htmlBlob.type]: htmlBlob,
     });
-    return navigator.clipboard.write([cpItem]);
+    return wait().then(_ => {
+      return navigator.clipboard.write([cpItem])
+        .then(_ => { return {ok: true}})
+        .catch(e => { console.error('copylink failed', e); return {ok: false}});
+    });
 }
 
 var CL = new CreateLink();
