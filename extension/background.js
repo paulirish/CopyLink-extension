@@ -53,9 +53,10 @@ class CreateLink {
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1263871&q=self%20profiling&can=2 "Monorail"
       // https://crbug.com/1263871
       .replace('bugs.chromium.org/p/chromium/issues/detail?id=', 'crbug.com/')
+      // LOL WHY DID I WANT TO GET RID OF EVERYTHIGN. it breaks useful URLs like https://www.youtube.com/playlist?list=PL2H982z_YKeu44Yiz1YIWld1578yA3u3D
       // drop extra params
-      .replace(/\?.*/,'')
-      .replace(/&.*/,'')
+      // .replace(/\?.*/,'')
+      // .replace(/&.*/,'')
   }
 
 
