@@ -8,10 +8,3 @@ copies an html link of the page you're looking at which is perfect for pasting i
 
 #### How to use
   * Click on the page action button
-  * Use `ctrl-shift-c` on mac, or `Alt+Shift+C` on windows.
-
-#### Todo:
-  * new logo/icon
-
-#### Also
-  * I use [this insane chrome webstore API chrome app](https://github.com/GoogleChrome/chrome-app-samples/tree/master/samples/web-store) to publish new versions. its amazing
